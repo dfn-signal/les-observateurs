@@ -1,5 +1,6 @@
 import logging
 import os
+import shlex
 import subprocess
 import threading
 import time
@@ -112,7 +113,19 @@ class FileEventHandler(FileSystemEventHandler):
                 break
 
             logging.info(f"Processing file: {file_to_process}")
-            command = f'/home/nruest/.pyenv/shims/whisper --threads 11 --model turbo --fp16 False --language en --output_format vtt --output_dir "{output_dir}" "{watch_dir}/{file_to_process}"'
+
+            # Escape the file paths using shlex.
+            # See: Beyoncé Was Paid $10 Million For A 3 Minute Endorsement？! ｜ Candace Ep 103.mp3
+            output_dir_escaped = shlex.quote(output_dir)
+            watch_dir_escaped = shlex.quote(watch_dir)
+            file_to_process_escaped = shlex.quote(file_to_process)
+
+            command = (
+                f"/home/nruest/.pyenv/shims/whisper "
+                f"--threads 11 --model turbo --fp16 False --language en "
+                f"--output_format vtt --output_dir {output_dir_escaped} "
+                f"{watch_dir_escaped}/{file_to_process_escaped}"
+            )
 
             try:
                 subprocess.run(command, shell=True, check=True)
