@@ -1,0 +1,6 @@
+[paths]
+base_podcast_dir = "digfem/podcast-analysis/media"
+queue_file = "queue/les-observateurs-processed-queue.txt"
+
+[logging]
+logfile = "logs/les-observateurs-logfile.log"
