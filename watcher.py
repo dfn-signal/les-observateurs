@@ -40,6 +40,7 @@ class FileEventHandler(FileSystemEventHandler):
         self.queue_file = queue_file
 
     def handle_event(self, file_path):
+        logging.info(f"Event detected: {file_path}")
         if not file_path.lower().endswith(".mp3"):
             return
 
@@ -48,6 +49,9 @@ class FileEventHandler(FileSystemEventHandler):
 
         filename = os.path.basename(file_path)
         base_name, _ = os.path.splitext(filename)
+
+        podcast_root = Path(file_path).parents[1]
+
         vtt_path = podcast_root / "vtt" / f"{base_name}.vtt"
 
         if vtt_path.exists():
@@ -56,7 +60,6 @@ class FileEventHandler(FileSystemEventHandler):
             save_queue(self.queue_file, PROCESSED_FILES)
             return
 
-        podcast_root = Path(file_path).parents[1]
         mp3_dir = podcast_root / "mp3"
         vtt_dir = podcast_root / "vtt"
 
@@ -70,10 +73,12 @@ class FileEventHandler(FileSystemEventHandler):
         save_queue(self.queue_file, PROCESSED_FILES)
 
     def on_created(self, event):
+        logging.info(f"Created event triggered: {event.src_path}")
         if not event.is_directory:
             self.handle_event(event.src_path)
 
     def on_moved(self, event):
+        logging.info(f"Moved event triggered: {event.dest_path}")
         if not event.is_directory:
             self.handle_event(event.dest_path)
 

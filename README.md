@@ -5,6 +5,7 @@ A [`celery`](https://github.com/celery/celery) backed utility to watch a set of 
 ## Usage
 
 * `./celery_worker.sh`
+* `python watcher.py config.toml`
 
 ## License
 
