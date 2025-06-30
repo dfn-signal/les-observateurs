@@ -5,6 +5,7 @@ import subprocess
 
 import toml
 from celery import Celery
+from celery.utils.log import get_task_logger
 
 CONFIG_PATH = "config.toml"
 if os.path.exists(CONFIG_PATH):
@@ -13,12 +14,17 @@ if os.path.exists(CONFIG_PATH):
 else:
     log_file = "logs/default-worker.log"
 
+os.makedirs(os.path.dirname(log_file), exist_ok=True)
+
 logging.basicConfig(
     filename=log_file,
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
+    force=True,  # Python 3.8+
 )
-logging.info("Celery worker started and logging initialized.")
+
+logger = get_task_logger(__name__)
+logger.info("Celery worker started and logging initialized.")
 
 app = Celery(
     "tasks",
@@ -28,7 +34,7 @@ app = Celery(
 
 @app.task
 def transcribe_file(mp3_dir, vtt_dir, filename):
-    logging.info(f"Transcribing {filename} from {mp3_dir}")
+    logger.info(f"Transcribing {filename} from {mp3_dir}")
     command = (
         f"/home/nruest/.pyenv/shims/whisper "
         f"--threads 12 --model turbo --fp16 False --language en "
@@ -37,8 +43,8 @@ def transcribe_file(mp3_dir, vtt_dir, filename):
     )
     try:
         subprocess.run(command, shell=True, check=True)
-        logging.info(f"Transcription complete: {filename}")
+        logger.info("Transcription complete for: %s", filename)
         return True
     except subprocess.CalledProcessError as e:
-        logging.error(f"Error processing {filename}: {e}")
+        logger.error("Error processing %s: %s", filename, e)
         return False
