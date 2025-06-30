@@ -1,6 +1,8 @@
 ~
 *.swp
 
+logs/les-observateurs-logfile.log
+
 dist/*
 */*.egg-info/*
 __pycache__

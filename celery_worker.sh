@@ -1,1 +1,1 @@
-celery -A tasks worker --loglevel=info --concurrency=1
+celery -A les_observateurs.tasks worker --loglevel=info --concurrency=1

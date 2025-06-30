@@ -1,11 +1,13 @@
 # les observateurs
 
-A [`celery`](https://github.com/celery/celery) backed utility to watch a set of directories for incoming podcast downloads and transcribe them with [`whisper`](https://github.com/openai/whisper).
+A [RabbitMQ](https://www.rabbitmq.com/) and [`celery`](https://github.com/celery/celery) backed utility to watch a set of directories for incoming podcast downloads and transcribe them with [`whisper`](https://github.com/openai/whisper).
 
 ## Usage
 
-* `./celery_worker.sh`
-* `python watcher.py config.toml`
+* `apt install rabbitmq-server`
+* `poetry install`
+* `poetry run watcher config.toml`
+* `poetry run bash celery_worker.sh`
 
 ## License
 

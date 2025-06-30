@@ -1,0 +1,27 @@
+[project]
+name = "les-observateurs"
+version = "0.1.0"
+description = "A RabbitMQ and celery backed utility to watch a set of directories for incoming podcast downloads and transcribe them with whisper."
+authors = [
+    {name = "nruest",email = "ruestn@gmail.com"}
+]
+license = {text = "UNLICENSE"}
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "watchdog (>=6.0.0,<7.0.0)",
+    "celery (>=5.5.3,<6.0.0)",
+    "psutil (>=7.0.0,<8.0.0)"
+]
+
+[tool.poetry]
+
+[tool.poetry.group.dev.dependencies]
+toml = "^0.10.2"
+
+[tool.poetry.scripts]
+watcher = "les_observateurs.watcher:main"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

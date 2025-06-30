@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 import time
 from pathlib import Path
 
@@ -7,7 +8,7 @@ import toml
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
-from tasks import transcribe_file
+from les_observateurs.tasks import transcribe_file
 
 PROCESSED_FILES = set()
 
@@ -91,14 +92,13 @@ def find_mp3_directories(base_dir):
     return mp3_dirs
 
 
-if __name__ == "__main__":
-    import sys
-
+def main():
     if len(sys.argv) != 2:
         print("Usage: python watcher.py config.toml")
-        exit(1)
+        sys.exit(1)
 
     base_podcast_dir, queue_file = load_config(sys.argv[1])
+    global PROCESSED_FILES
     PROCESSED_FILES = load_queue(queue_file)
 
     observer = Observer()
@@ -109,10 +109,13 @@ if __name__ == "__main__":
         logging.info(f"Watching directory: {mp3_dir}")
 
     observer.start()
-
     try:
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
         observer.stop()
     observer.join()
+
+
+if __name__ == "__main__":
+    main()
